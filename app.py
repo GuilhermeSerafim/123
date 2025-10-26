@@ -2,9 +2,13 @@ from fastapi import FastAPI, Request
 from fastapi.responses import Response
 from twilio.twiml.voice_response import VoiceResponse
 import uvicorn
-from classifier import classify_emergency_call
-from urgency_classifier import classify_police_urgency, generate_police_instructions
-from firefighter_urgency_classifier import classify_firefighter_urgency, generate_firefighter_instructions
+from classifiers import (
+    classify_emergency_call,
+    classify_police_urgency, 
+    generate_police_instructions,
+    classify_firefighter_urgency,
+    generate_firefighter_instructions
+)
 from pydantic import BaseModel
 
 app = FastAPI()

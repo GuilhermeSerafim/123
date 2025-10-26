@@ -4,7 +4,7 @@ Script de teste para validar a implementação do caso "policia-analogia".
 Testa a detecção de chamadas disfarçadas e classificação normal.
 """
 
-from classifier import classify_emergency_call, detect_disguised_call
+from classifiers import classify_emergency_call, detect_disguised_call
 
 def test_disguised_calls():
     """Testa chamadas disfarçadas que devem ser detectadas"""

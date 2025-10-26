@@ -7,7 +7,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from firefighter_urgency_classifier import classify_firefighter_urgency, generate_firefighter_instructions
+from classifiers import classify_firefighter_urgency, generate_firefighter_instructions
 
 def test_firefighter_urgency_classification():
     """Testa diferentes cenários de urgência para BOMBEIROS"""

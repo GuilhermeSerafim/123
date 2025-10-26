@@ -3,7 +3,7 @@ Script de teste do classificador de chamadas de emergência.
 Testa com dados mockados antes de integrar com chamadas reais.
 """
 
-from classifier import classify_emergency_call
+from classifiers import classify_emergency_call
 
 # Dados mockados para teste
 test_cases = [

@@ -116,11 +116,14 @@ O sistema está integrado com Twilio para chamadas reais:
 ```
 unificador-de-emergencia/
 ├── app.py                    # 🚀 API FastAPI com endpoints
-├── classifier.py             # 🧠 Lógica de classificação com OpenAI
-├── urgency_classifier.py     # 🚨 Classificador de urgência POLICIAL
-├── firefighter_urgency_classifier.py  # 🚒 Classificador de urgência de BOMBEIROS
 ├── answer_phone.py          # 📞 Versão Flask (legado)
 ├── requirements.txt         # 📦 Dependências do projeto
+├── classifiers/             # 🧠 Pasta de classificadores organizados
+│   ├── __init__.py
+│   ├── classifier.py        # 🧠 Classificador geral de emergências
+│   ├── urgency_classifier.py # 🚨 Classificador de urgência POLICIAL
+│   ├── firefighter_urgency_classifier.py  # 🚒 Classificador de urgência de BOMBEIROS
+│   └── README.md            # 📖 Documentação dos classificadores
 ├── tests/                   # 🧪 Pasta de testes organizados
 │   ├── __init__.py
 │   ├── run_all_tests.py     # 🚀 Executa todos os testes

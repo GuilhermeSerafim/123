@@ -7,7 +7,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from urgency_classifier import classify_police_urgency, generate_police_instructions
+from classifiers import classify_police_urgency, generate_police_instructions
 
 def test_police_urgency_classification():
     """Testa diferentes cenários de urgência POLICIAL"""
