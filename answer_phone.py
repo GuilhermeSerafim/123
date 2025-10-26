@@ -98,7 +98,7 @@ def receber_classificar_e_agir():
     if categoria == "samu":
         # Aqui entra o checklist do SAMU por exemplo
         pergunta_p1 = CHECKLIST_SAMU[0]["pergunta"]
-        response.say(f"Entendido. Vamos iniciar o checklist SAMU. {pergunta_p1}", language="pt-BR")
+        response.say(f"Entendido. Vamos iniciar o checklist SAMU. {pergunta_p1}", language="pt-BR", voice="alice")
         
         # Pergunta e ouve a resposta, apontando para a nova rota
         response.gather(
@@ -148,7 +148,7 @@ def processar_checklist_samu():
 
         # Agora, vamos fazer a P2
         pergunta_p2 = CHECKLIST_SAMU[1]["pergunta"]
-        response.say(pergunta_p2, language="pt-BR")
+        response.say(pergunta_p2, language="pt-BR", voice="alice")
 
         response.gather(
             input="speech",
@@ -162,6 +162,53 @@ def processar_checklist_samu():
     elif passo_atual == 2:
         print(f"--- [{id_chamada} Checklist SAMU ---]")
         print(f"Resposta P1 (Sintoma): {resposta_usuario}")
+        pergunta_p3 = CHECKLIST_SAMU[2]["pergunta"]
+        response.say(pergunta_p3, language="pt-BR", voice="alice")
+        response.gather(
+            input="speech",
+            language="pt-BR",
+            action=f"/processar_checklist_samu?passo=3"
+        )
+    elif passo_atual == 3:
+        print(f"--- [{id_chamada} Checklist SAMU ---]")
+        print(f"Resposta P1 (Sintoma): {resposta_usuario}")
+        pergunta_p4 = CHECKLIST_SAMU[3]["pergunta"]
+        response.say(pergunta_p4, language="pt-BR", voice="alice")
+        response.gather(
+            input="speech",
+            language="pt-BR",
+            action=f"/processar_checklist_samu?passo=4"
+        )
+    elif passo_atual == 4:
+        print(f"--- [{id_chamada} Checklist SAMU ---]")
+        print(f"Resposta P1 (Sintoma): {resposta_usuario}")
+        pergunta_p5 = CHECKLIST_SAMU[4]["pergunta"]
+        response.say(pergunta_p5, language="pt-BR", voice="alice")
+        response.gather(
+            input="speech",
+            language="pt-BR",
+            action=f"/processar_checklist_samu?passo=4"
+        )
+    elif passo_atual == 5:
+        print(f"--- [{id_chamada} Checklist SAMU ---]")
+        print(f"Resposta P1 (Sintoma): {resposta_usuario}")
+        pergunta_p6 = CHECKLIST_SAMU[5]["pergunta"]
+        response.say(pergunta_p6, language="pt-BR", voice="alice")
+        response.gather(
+            input="speech",
+            language="pt-BR",
+            action=f"/processar_checklist_samu?passo=5"
+        )
+    elif passo_atual == 6:
+        print(f"--- [{id_chamada} Checklist SAMU ---]")
+        print(f"Resposta P1 (Sintoma): {resposta_usuario}")
+        pergunta_p7 = CHECKLIST_SAMU[6]["pergunta"]
+        response.say(pergunta_p7, language="pt-BR", voice="alice")
+        response.gather(
+            input="speech",
+            language="pt-BR",
+            action=f"/processar_checklist_samu?passo=6"
+        )
 
         response.say("Aguarde a emergência", language="pt-BR", voice="alice")
         response.hangup()
