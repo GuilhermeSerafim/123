@@ -5,12 +5,8 @@ from twilio.twiml.voice_response import VoiceResponse, Gather, Dial, Say
 from openai import OpenAI
 from dotenv import load_dotenv
 from typing import Dict
-import json
 from twilio.rest import Client # Certifique-se que 'Client' está importado de 'twilio.rest'
 from classifiers.classifier import classify_emergency_call
-from classifiers.firefighter_urgency_classifier import generate_firefighter_instructions, classify_firefighter_urgency
-from classifiers.police_urgency_classifier import generate_police_instructions, classify_police_urgency
-from classifiers.samu_urgency_classifier import classify_samu_urgency
 from classifiers.gerar_relatorio_conciso_ia import gerar_relatorio_conciso_ia
 
 load_dotenv()
@@ -302,7 +298,7 @@ def processar_checklist_samu():
         response.say("Checklist concluído. As equipes estão sendo acionadas. Encerrando chamada.", language="pt-BR", voice="alice")
         response.hangup() # Adiciona o comando para desligar a chamada do usuário
         # -------------------------------------------
-        
+
         # --- FIM DO BABY STEP ---
         # --- BABY STEP: ADICIONAR O DELAY ---
         print(f"[{id_chamada}] Esperando 5 segundos antes de iniciar a simulação...")
