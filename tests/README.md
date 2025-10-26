@@ -8,7 +8,7 @@ Esta pasta contém todos os testes do sistema de classificação de emergências
 tests/
 ├── __init__.py                           # Torna a pasta um pacote Python
 ├── run_all_tests.py                     # Executa todos os testes
-├── test_urgency_classifier.py           # Testes do classificador de urgência POLICIAL
+├── test_police_urgency_classifier.py    # Testes do classificador de urgência POLICIAL
 ├── test_firefighter_urgency_classifier.py  # Testes do classificador de urgência de BOMBEIROS
 ├── test_classifier.py                   # Testes do classificador geral
 ├── test_policia_analogia.py             # Testes de chamadas disfarçadas
@@ -26,7 +26,7 @@ python tests/run_all_tests.py
 ### Executar Teste Específico
 ```bash
 # Teste de urgência policial
-python tests/test_urgency_classifier.py
+python tests/test_police_urgency_classifier.py
 
 # Teste de classificação geral
 python tests/test_classifier.py
@@ -40,7 +40,7 @@ python tests/test_policia_analogia.py
 
 ## 🧪 Tipos de Testes
 
-### 1. **Teste de Urgência POLICIAL** (`test_urgency_classifier.py`)
+### 1. **Teste de Urgência POLICIAL** (`test_police_urgency_classifier.py`)
 - Testa 5 cenários diferentes de urgência
 - Valida níveis: CRÍTICA, ALTA, MÉDIA, BAIXA
 - Verifica extração de informações (P1-P6)

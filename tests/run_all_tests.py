@@ -19,7 +19,7 @@ def run_all_tests():
     print("\n🚨 TESTE 1: Classificador de Urgência POLICIAL")
     print("-" * 50)
     try:
-        from test_urgency_classifier import test_police_urgency_classification
+        from test_police_urgency_classifier import test_police_urgency_classification
         test_police_urgency_classification()
         print("✅ Teste de urgência policial: PASSOU")
     except Exception as e:

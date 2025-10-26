@@ -67,7 +67,7 @@ Ou execute testes específicos:
 python tests/test_classifier.py
 
 # Teste de urgência policial
-python tests/test_urgency_classifier.py
+python tests/test_police_urgency_classifier.py
 
 # Teste de polícia analogia
 python tests/test_policia_analogia.py
@@ -121,14 +121,14 @@ unificador-de-emergencia/
 ├── classifiers/             # 🧠 Pasta de classificadores organizados
 │   ├── __init__.py
 │   ├── classifier.py        # 🧠 Classificador geral de emergências
-│   ├── urgency_classifier.py # 🚨 Classificador de urgência POLICIAL
+│   ├── police_urgency_classifier.py # 🚨 Classificador de urgência POLICIAL
 │   ├── firefighter_urgency_classifier.py  # 🚒 Classificador de urgência de BOMBEIROS
 │   └── README.md            # 📖 Documentação dos classificadores
 ├── tests/                   # 🧪 Pasta de testes organizados
 │   ├── __init__.py
 │   ├── run_all_tests.py     # 🚀 Executa todos os testes
 │   ├── test_classifier.py   # 🧪 Teste de classificação geral
-│   ├── test_urgency_classifier.py  # 🚨 Teste de urgência policial
+│   ├── test_police_urgency_classifier.py  # 🚨 Teste de urgência policial
 │   ├── test_firefighter_urgency_classifier.py  # 🚒 Teste de urgência de bombeiros
 │   ├── test_policia_analogia.py   # 🍕 Teste de chamadas disfarçadas
 │   └── README.md            # 📖 Documentação dos testes

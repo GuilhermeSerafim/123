@@ -8,7 +8,7 @@ Esta pasta contém todos os classificadores do sistema de classificação de eme
 classifiers/
 ├── __init__.py                           # Torna a pasta um pacote Python
 ├── classifier.py                         # 🧠 Classificador geral de emergências
-├── urgency_classifier.py                 # 🚨 Classificador de urgência POLICIAL
+├── police_urgency_classifier.py          # 🚨 Classificador de urgência POLICIAL
 ├── firefighter_urgency_classifier.py     # 🚒 Classificador de urgência de BOMBEIROS
 └── README.md                            # Esta documentação
 ```
@@ -21,7 +21,7 @@ classifiers/
 - **Detecção**: Chamadas disfarçadas (pizza de espinafre com ketchup)
 - **Uso**: Primeira classificação para determinar o tipo de emergência
 
-### 2. **Classificador de Urgência POLICIAL** (`urgency_classifier.py`)
+### 2. **Classificador de Urgência POLICIAL** (`police_urgency_classifier.py`)
 - **Função**: `classify_police_urgency(transcript)`
 - **Níveis**: CRÍTICA, ALTA, MÉDIA, BAIXA
 - **Critérios**: P1-P6 (autor presente, armas, vítimas, etc.)
