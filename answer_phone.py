@@ -48,26 +48,13 @@ CHECKLIST_POLICIA = [
 ]
 
 CHECKLIST_BOMBEIROS = [
-    # 1. Onde é a emergência?
-    {"id": "P7_acesso_referencia", "pergunta": "Qual o endereço completo com ponto de referência e informações de acesso, como portaria ou bloco?"},
-
-    # 2. Qual é a emergência?
-    {"id": "P1_tipo_emergencia", "pergunta": "O que está pegando fogo ou qual a emergência técnica? Por exemplo, residência, veículo, vazamento de gás ou queda de árvore."},
-
-    # 3. Risco imediato à vida?
-    {"id": "P2_pessoas_presas", "pergunta": "Há pessoas presas ou inconscientes?"},
-
-    # 4. Gravidade
-    {"id": "P3_chamas_fumaca", "pergunta": "Você vê chamas, muita fumaça ou só cheiro de queimado?"},
-
-    # 5. Riscos adicionais
-    {"id": "P4_materiais_perigosos", "pergunta": "Há materiais perigosos no local, como botijão de gás, produtos químicos ou combustíveis?"},
-    
-    # 6. Detalhes de acesso
-    {"id": "P5_acesso", "pergunta": "Como é o acesso ao local? A rua é estreita ou tem algum portão trancado?"},
-
-    # 7. Ações no local
-    {"id": "P6_tentativa_combate", "pergunta": "Alguém já tentou combater o fogo, por exemplo, com extintor ou mangueira?"}
+    {"id": "P1_acesso_referencia", "pergunta": "Qual o endereço completo com ponto de referência e informações de acesso, como portaria ou bloco?"},
+    {"id": "P2_tipo_emergencia", "pergunta": "O que está pegando fogo ou qual a emergência técnica? Por exemplo, residência, veículo, vazamento de gás ou queda de árvore."}, 
+    {"id": "P3_pessoas_presas", "pergunta": "Há pessoas presas ou inconscientes?"}, 
+    {"id": "P4_chamas_fumaca", "pergunta": "Você vê chamas, muita fumaça ou só cheiro de queimado?"},
+    {"id": "P5_materiais_perigosos", "pergunta": "Há materiais perigosos no local, como botijão de gás, produtos químicos ou combustíveis?"}, 
+    {"id": "P6_acesso", "pergunta": "Como é o acesso ao local? A rua é estreita ou tem algum portão trancado?"}, 
+    {"id": "P7_tentativa_combate", "pergunta": "Alguém já tentou combater o fogo, por exemplo, com extintor ou mangueira?"} 
 ]
 
 app = Flask(__name__)
