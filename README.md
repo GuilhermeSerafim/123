@@ -109,6 +109,7 @@ O sistema está integrado com Twilio para chamadas reais:
 - `POST /handle_recording` - Processa gravações
 - `POST /classify` - Classifica textos
 - `POST /classify-police-urgency` - Classifica urgência POLICIAL
+- `POST /classify-firefighter-urgency` - Classifica urgência de BOMBEIROS
 
 ## 📁 Estrutura do Projeto
 
@@ -117,6 +118,7 @@ unificador-de-emergencia/
 ├── app.py                    # 🚀 API FastAPI com endpoints
 ├── classifier.py             # 🧠 Lógica de classificação com OpenAI
 ├── urgency_classifier.py     # 🚨 Classificador de urgência POLICIAL
+├── firefighter_urgency_classifier.py  # 🚒 Classificador de urgência de BOMBEIROS
 ├── answer_phone.py          # 📞 Versão Flask (legado)
 ├── requirements.txt         # 📦 Dependências do projeto
 ├── tests/                   # 🧪 Pasta de testes organizados
@@ -124,6 +126,7 @@ unificador-de-emergencia/
 │   ├── run_all_tests.py     # 🚀 Executa todos os testes
 │   ├── test_classifier.py   # 🧪 Teste de classificação geral
 │   ├── test_urgency_classifier.py  # 🚨 Teste de urgência policial
+│   ├── test_firefighter_urgency_classifier.py  # 🚒 Teste de urgência de bombeiros
 │   ├── test_policia_analogia.py   # 🍕 Teste de chamadas disfarçadas
 │   └── README.md            # 📖 Documentação dos testes
 ├── README.md                # 📖 Documentação principal

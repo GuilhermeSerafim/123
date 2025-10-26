@@ -6,12 +6,13 @@ Esta pasta contém todos os testes do sistema de classificação de emergências
 
 ```
 tests/
-├── __init__.py                    # Torna a pasta um pacote Python
-├── run_all_tests.py              # Executa todos os testes
-├── test_urgency_classifier.py    # Testes do classificador de urgência POLICIAL
-├── test_classifier.py            # Testes do classificador geral
-├── test_policia_analogia.py      # Testes de chamadas disfarçadas
-└── README.md                     # Esta documentação
+├── __init__.py                           # Torna a pasta um pacote Python
+├── run_all_tests.py                     # Executa todos os testes
+├── test_urgency_classifier.py           # Testes do classificador de urgência POLICIAL
+├── test_firefighter_urgency_classifier.py  # Testes do classificador de urgência de BOMBEIROS
+├── test_classifier.py                   # Testes do classificador geral
+├── test_policia_analogia.py             # Testes de chamadas disfarçadas
+└── README.md                            # Esta documentação
 ```
 
 ## 🚀 Como Executar
@@ -30,6 +31,9 @@ python tests/test_urgency_classifier.py
 # Teste de classificação geral
 python tests/test_classifier.py
 
+# Teste de urgência de bombeiros
+python tests/test_firefighter_urgency_classifier.py
+
 # Teste de polícia analogia
 python tests/test_policia_analogia.py
 ```
@@ -47,7 +51,13 @@ python tests/test_policia_analogia.py
 - Valida detecção de chamadas disfarçadas
 - Testa diferentes tipos de emergências
 
-### 3. **Teste de Polícia Analogia** (`test_policia_analogia.py`)
+### 3. **Teste de Urgência de BOMBEIROS** (`test_firefighter_urgency_classifier.py`)
+- Testa 7 cenários diferentes de urgência para bombeiros
+- Valida níveis: CRÍTICA, ALTA, MÉDIA, BAIXA
+- Verifica extração de informações (P1-P6) específicas para bombeiros
+- Gera instruções para despacho de bombeiros
+
+### 4. **Teste de Polícia Analogia** (`test_policia_analogia.py`)
 - Testa detecção de chamadas disfarçadas
 - Valida padrões como "pizza de espinafre com ketchup"
 - Verifica classificação como "policia-analogia"

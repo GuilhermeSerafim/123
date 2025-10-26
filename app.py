@@ -4,6 +4,7 @@ from twilio.twiml.voice_response import VoiceResponse
 import uvicorn
 from classifier import classify_emergency_call
 from urgency_classifier import classify_police_urgency, generate_police_instructions
+from firefighter_urgency_classifier import classify_firefighter_urgency, generate_firefighter_instructions
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -72,6 +73,19 @@ async def handle_recording(request: Request):
         police_instructions = generate_police_instructions(urgency_data)
         print("📋 Instruções para Despacho POLICIAL:")
         print(police_instructions)
+    
+    # Se for uma emergência de bombeiros, classifica a urgência de BOMBEIROS
+    elif classification['category'] in ['bombeiros']:
+        urgency_data = classify_firefighter_urgency(transcript)
+        print("🚒 Análise de Urgência de BOMBEIROS:")
+        print(f"   Nível: {urgency_data['urgency_level']}")
+        print(f"   Confiança: {urgency_data['confidence']}%")
+        print(f"   Motivo: {urgency_data['reasoning']}")
+        
+        # Gera instruções específicas para os bombeiros
+        firefighter_instructions = generate_firefighter_instructions(urgency_data)
+        print("📋 Instruções para Despacho de BOMBEIROS:")
+        print(firefighter_instructions)
 
     response = VoiceResponse()
     response.say("Obrigado. Sua emergência foi registrada e será atendida em breve.")
@@ -98,6 +112,20 @@ async def classify_police_urgency_endpoint(request: ClassifyRequest):
     return {
         "police_urgency_analysis": urgency_data,
         "police_instructions": police_instructions
+    }
+
+@app.post("/classify-firefighter-urgency")
+async def classify_firefighter_urgency_endpoint(request: ClassifyRequest):
+    """
+    Endpoint para testar classificação de urgência de BOMBEIROS de textos mockados.
+    Recebe um texto e retorna a análise de urgência de bombeiros com instruções.
+    """
+    urgency_data = classify_firefighter_urgency(request.text)
+    firefighter_instructions = generate_firefighter_instructions(urgency_data)
+    
+    return {
+        "firefighter_urgency_analysis": urgency_data,
+        "firefighter_instructions": firefighter_instructions
     }
 
 if __name__ == "__main__":

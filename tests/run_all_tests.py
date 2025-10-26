@@ -45,6 +45,16 @@ def run_all_tests():
     except Exception as e:
         print(f"❌ Teste de polícia analogia: FALHOU - {e}")
     
+    # Teste 4: Classificador de urgência de bombeiros
+    print("\n🚒 TESTE 4: Classificador de Urgência de BOMBEIROS")
+    print("-" * 50)
+    try:
+        from test_firefighter_urgency_classifier import test_firefighter_urgency_classification
+        test_firefighter_urgency_classification()
+        print("✅ Teste de urgência de bombeiros: PASSOU")
+    except Exception as e:
+        print(f"❌ Teste de urgência de bombeiros: FALHOU - {e}")
+    
     print("\n" + "=" * 60)
     print("🏁 TODOS OS TESTES CONCLUÍDOS")
 
