@@ -15,8 +15,8 @@ async def voice(request: Request):
     # Aqui é o que acontece quando alguém liga pro teu número
     data = await request.form()
     response = VoiceResponse()
-    response.say("Olá! Você ligou para o sistema de emergência unificado. "
-                 "Descreva o que está acontecendo após o bip.")
+    response.say("Olá! Você ligou para o Centro de Emergência Unificado. "
+                 "Descreva sua emergência após o bip.")
     response.record(maxLength=10, action="/handle_recording", transcribe=True)
     return str(response)
 
@@ -36,7 +36,7 @@ async def handle_recording(request: Request):
     print(f"   Motivo: {classification['reasoning']}")
 
     response = VoiceResponse()
-    response.say("Obrigado. Sua mensagem foi registrada.")
+    response.say("Obrigado. Sua emergência foi registrada e será atendida em breve.")
     return str(response)
 
 @app.post("/classify")
