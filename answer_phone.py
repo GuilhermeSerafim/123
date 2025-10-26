@@ -107,25 +107,21 @@ def receber_classificar_e_agir():
             action="/processar_checklist_samu?passo=1" # Aponta para a nova rota
         )
         # Fallback se o usuário não responder à P1
-        response.say("Não obtivemos resposta. Encerrando.", language="pt-BR")
+        response.say("Não obtivemos resposta. Encerrando.", language="pt-BR", voice="alice")
         response.hangup()
         # retornoDoChecklist = classify_samu_urgency(texto_transcrito)
         
     
     elif categoria == "policia":
-        response.say("Entendido, ocorrência policial. Transferindo para a Polícia.", language="pt-BR")
+        response.say("Entendido, ocorrência policial. Transferindo para a Polícia.", language="pt-BR", voice="alice")
         response.dial("190") # Transfere para a Polícia
     
     elif categoria == "bombeiros":
-        response.say("Entendido, incêndio ou resgate. Transferindo para os Bombeiros.", language="pt-BR")
+        response.say("Entendido, incêndio ou resgate. Transferindo para os Bombeiros.", language="pt-BR", voice="alice")
         response.dial("193") # Transfere para os Bombeiros
     
-    elif categoria == "trote":
-        response.say("Isso não é uma emergência. Por favor, não ocupe esta linha.", language="pt-BR")
-        response.hangup()
-    
     else: # Categoria "indefinido" ou erro
-        response.say("Não foi possível classificar sua emergência. Transferindo para um atendente.", language="pt-BR")
+        response.say("Não foi possível classificar sua emergência. Transferindo para um atendente.", language="pt-BR", voice="alice")
         # No hackathon, transfira para um número de "fallback", ex: seu celular
         # Vou usar um número fictício para o exemplo:
         response.dial("100") # (Substitua por um número de triagem manual)
@@ -160,18 +156,18 @@ def processar_checklist_samu():
             action=f"/processar_checklist_samu?passo=2"
         )
 
-        response.say("Não obtivemos resposta. Encerrando.", language="pt-BR")
+        response.say("Não obtivemos resposta. Encerrando.", language="pt-BR", voice="alice")
         response.hangup()
 
     elif passo_atual == 2:
         print(f"--- [{id_chamada} Checklist SAMU ---]")
         print(f"Resposta P1 (Sintoma): {resposta_usuario}")
 
-        response.say("Aguarde a emergência", language="pt-BR")
+        response.say("Aguarde a emergência", language="pt-BR", voice="alice")
         response.hangup()
     else:
         # Segurança: se algo der errado
-        response.say("Ocorreu um erro no checklist. Encerrando.", language="pt-BR")
+        response.say("Ocorreu um erro no checklist. Encerrando.", language="pt-BR", voice="alice")
         response.hangup()
     return Response(str(response), content_type='application/xml')
 
