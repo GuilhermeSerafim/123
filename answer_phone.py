@@ -296,6 +296,13 @@ def processar_checklist_samu():
         print("---- RELATÓRIO FINAL GERADO PELA IA ----")
         print(relatorio_texto)
         print("---------------------------------------")
+
+        # --- AVISO FINAL PARA O USUÁRIO ORIGINAL ---
+        # Substitua o response.say() vazio por isto:
+        response.say("Checklist concluído. As equipes estão sendo acionadas. Encerrando chamada.", language="pt-BR", voice="alice")
+        response.hangup() # Adiciona o comando para desligar a chamada do usuário
+        # -------------------------------------------
+        
         # --- FIM DO BABY STEP ---
         # --- BABY STEP: ADICIONAR O DELAY ---
         print(f"[{id_chamada}] Esperando 5 segundos antes de iniciar a simulação...")
