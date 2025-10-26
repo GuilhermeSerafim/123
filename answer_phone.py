@@ -187,7 +187,7 @@ def processar_checklist_samu():
         response.gather(
             input="speech",
             language="pt-BR",
-            action=f"/processar_checklist_samu?passo=4"
+            action=f"/processar_checklist_samu?passo=5"
         )
     elif passo_atual == 5:
         print(f"--- [{id_chamada} Checklist SAMU ---]")
@@ -197,20 +197,15 @@ def processar_checklist_samu():
         response.gather(
             input="speech",
             language="pt-BR",
-            action=f"/processar_checklist_samu?passo=5"
+            action=f"/processar_checklist_samu?passo=6"
         )
     elif passo_atual == 6:
         print(f"--- [{id_chamada} Checklist SAMU ---]")
-        print(f"Resposta P1 (Sintoma): {resposta_usuario}")
-        pergunta_p7 = CHECKLIST_SAMU[6]["pergunta"]
-        response.say(pergunta_p7, language="pt-BR", voice="alice")
-        response.gather(
-            input="speech",
-            language="pt-BR",
-            action=f"/processar_checklist_samu?passo=6"
-        )
+        print(f"--- [{id_chamada}] Checklist SAMU ---")
+        print(f"Resposta P6 (Acesso): {resposta_usuario}")
+        print(f"--- [{id_chamada}] Checklist Concluído ---")
 
-        response.say("Aguarde a emergência", language="pt-BR", voice="alice")
+        response.say("Checklist concluído. As equipes estão sendo acionadas. Encerrando chamada.", language="pt-BR", voice="alice")
         response.hangup()
     else:
         # Segurança: se algo der errado
