@@ -104,7 +104,7 @@ def receber_classificar_e_agir():
         response.gather(
             input="speech",
             language="pt-BR",
-            action="/processar_checklist_samu" # Aponta para a nova rota
+            action="/processar_checklist_samu?passo=1" # Aponta para a nova rota
         )
         # Fallback se o usuário não responder à P1
         response.say("Não obtivemos resposta. Encerrando.", language="pt-BR")
@@ -137,22 +137,44 @@ def receber_classificar_e_agir():
 @app.route("/processar_checklist_samu", methods=['POST'])
 def processar_checklist_samu():
     """
-    PASSO 3: Recebe a resposta da P1 e encerra (por enquanto).
+    PASSO 3 (e 4, 5...): O "Motor" do Checklist.
     """
-    
-    # Pega a resposta da P1
-    resposta_p1 = request.form.get('SpeechResult')
+    passo_atual = int(request.args.get("passo", 0))
+    resposta_usuario = request.form.get('SpeenchResult')
     id_chamada = request.form.get('CallSid')
 
-    print(f"--- [{id_chamada}] Checklist SAMU ---")
-    print(f"Resposta P1 (Sintoma): {resposta_p1}")
-
-    # Como é um teste mínimo, vamos apenas confirmar e encerrar.
     response = VoiceResponse()
-    response.say("Entendido. Resposta registrada. As equipes estão sendo acionadas. Encerrando chamada.", language="pt-BR")
-    response.hangup()
-    
+
+    # BABY STEP
+    if passo_atual == 1:
+        print(f"--- [{id_chamada} Checklist SAMU ---]")
+        print(f"Resposta P1 (Sintoma): {resposta_usuario}")
+
+        # Agora, vamos fazer a P2
+        pergunta_p2 = CHECKLIST_SAMU[1]["pergunta"]
+        response.say(pergunta_p2, language="pt-BR")
+
+        response.gather(
+            input="speech",
+            language="pt-BR",
+            action=f"/processar_checklist_samu?passo=2"
+        )
+
+        response.say("Não obtivemos resposta. Encerrando.", language="pt-BR")
+        response.hangup()
+
+    elif passo_atual == 2:
+        print(f"--- [{id_chamada} Checklist SAMU ---]")
+        print(f"Resposta P1 (Sintoma): {resposta_usuario}")
+
+        response.say("Aguarde a emergência", language="pt-BR")
+        response.hangup()
+    else:
+        # Segurança: se algo der errado
+        response.say("Ocorreu um erro no checklist. Encerrando.", language="pt-BR")
+        response.hangup()
     return Response(str(response), content_type='application/xml')
+
 
 # Inicia o servidor
 if __name__ == "__main__":
