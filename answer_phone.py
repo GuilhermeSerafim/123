@@ -8,7 +8,7 @@ import json
 
 from classifiers.classifier import classify_emergency_call
 from classifiers.firefighter_urgency_classifier import generate_firefighter_instructions, classify_firefighter_urgency
-from classifiers.police_urgency_classifier import generate_police_instructions
+from classifiers.police_urgency_classifier import generate_police_instructions, classify_police_urgency
 from classifiers.samu_urgency_classifier import classify_samu_urgency
 
 # --- Bloco do Classificador (Seu código) ---
@@ -35,6 +35,15 @@ CHECKLIST_BOMBEIROS = [
     {"id": "P4_materiais_perigosos", "pergunta": "Há materiais perigosos no local? Como botijão de gás, produtos químicos ou energia elétrica ligada."},
     {"id": "P5_acesso_local", "pergunta": "Qual o endereço completo e como é o acesso? Por exemplo, rua estreita ou portão trancado."},
     {"id": "P6_tentativa_combate", "pergunta": "Alguém já tentou apagar? Com extintor, mangueira ou não tentou."}
+]
+
+CHECKLIST_POLICIA = [
+    {"id": "P1_autor_presente", "pergunta": "O autor do crime ainda está presente no local?"},
+    {"id": "P2_armas_involvidas", "pergunta": "Há armas envolvidas? Como arma de fogo ou arma branca."},
+    {"id": "P3_descricao_autor", "pergunta": "Descreva o autor e direção de fuga. Roupas, cor, altura, veículo ou placa."},
+    {"id": "P4_timing_crime", "pergunta": "O crime está ocorrendo agora ou aconteceu há quanto tempo?"},
+    {"id": "P5_vitimas_feridas", "pergunta": "Há vítimas feridas ou sangramento?"},
+    {"id": "P6_local_seguro", "pergunta": "O local é seguro para você falar ou você está escondido?"}
 ]
 
 
@@ -122,8 +131,19 @@ def receber_classificar_e_agir():
         
     
     elif categoria == "policia":
-        response.say("Entendido, ocorrência policial. Transferindo para a Polícia.", language="pt-BR", voice="alice")
-        response.dial("190") # Transfere para a Polícia
+        # Aqui entra o checklist da Polícia
+        pergunta_p1 = CHECKLIST_POLICIA[0]["pergunta"]
+        response.say(f"Entendido. Vamos iniciar o checklist da Polícia. {pergunta_p1}", language="pt-BR", voice="alice")
+        
+        # Pergunta e ouve a resposta, apontando para a nova rota
+        response.gather(
+            input="speech",
+            language="pt-BR",
+            action="/processar_checklist_policia?passo=1"
+        )
+        # Fallback se o usuário não responder à P1
+        response.say("Não obtivemos resposta. Encerrando.", language="pt-BR", voice="alice")
+        response.hangup()
     
     elif categoria == "bombeiros":
         # Aqui entra o checklist de Bombeiros
@@ -451,6 +471,158 @@ P6 - Tentativa de combate: {r6}
         
         # Responde ao usuário com o nível de urgência
         mensagem_final = f"Checklist concluído. Sua emergência foi classificada como {nivel_urgencia}. Aguarde a chegada dos bombeiros."
+        response.say(mensagem_final, language="pt-BR", voice="alice")
+        response.hangup()
+        
+    else:
+        response.say("Ocorreu um erro no checklist. Encerrando.", language="pt-BR", voice="alice")
+        response.hangup()
+        
+    return Response(str(response), content_type='application/xml')
+
+
+# --- ROTA PARA CHECKLIST DE POLÍCIA ---
+@app.route("/processar_checklist_policia", methods=['POST'])
+def processar_checklist_policia():
+    """
+    Motor do Checklist da Polícia.
+    """
+    passo_atual = int(request.args.get("passo", 0))
+    resposta_usuario = request.form.get('SpeechResult')
+    id_chamada = request.form.get('CallSid')
+
+    response = VoiceResponse()
+
+    if passo_atual == 1:
+        print(f"--- [{id_chamada}] Checklist Polícia ---")
+        print(f"Resposta P1 (Autor): {resposta_usuario}")
+
+        r1 = resposta_usuario or ""
+        pergunta_p2 = CHECKLIST_POLICIA[1]["pergunta"]
+        response.say(pergunta_p2, language="pt-BR", voice="alice")
+
+        response.gather(
+            input="speech",
+            language="pt-BR",
+            action=f"/processar_checklist_policia?passo=2&r1={r1}"
+        )
+
+        response.say("Não obtivemos resposta. Encerrando.", language="pt-BR", voice="alice")
+        response.hangup()
+
+    elif passo_atual == 2:
+        print(f"--- [{id_chamada}] Checklist Polícia ---")
+        print(f"Resposta P2 (Armas): {resposta_usuario}")
+        
+        r1 = request.args.get("r1", "")
+        r2 = resposta_usuario or ""
+        pergunta_p3 = CHECKLIST_POLICIA[2]["pergunta"]
+        response.say(pergunta_p3, language="pt-BR", voice="alice")
+        
+        response.gather(
+            input="speech",
+            language="pt-BR",
+            action=f"/processar_checklist_policia?passo=3&r1={r1}&r2={r2}"
+        )
+        
+        response.say("Não obtivemos resposta. Encerrando.", language="pt-BR", voice="alice")
+        response.hangup()
+        
+    elif passo_atual == 3:
+        print(f"--- [{id_chamada}] Checklist Polícia ---")
+        print(f"Resposta P3 (Descrição): {resposta_usuario}")
+        
+        r1 = request.args.get("r1", "")
+        r2 = request.args.get("r2", "")
+        r3 = resposta_usuario or ""
+        pergunta_p4 = CHECKLIST_POLICIA[3]["pergunta"]
+        response.say(pergunta_p4, language="pt-BR", voice="alice")
+        
+        response.gather(
+            input="speech",
+            language="pt-BR",
+            action=f"/processar_checklist_policia?passo=4&r1={r1}&r2={r2}&r3={r3}"
+        )
+        
+        response.say("Não obtivemos resposta. Encerrando.", language="pt-BR", voice="alice")
+        response.hangup()
+        
+    elif passo_atual == 4:
+        print(f"--- [{id_chamada}] Checklist Polícia ---")
+        print(f"Resposta P4 (Timing): {resposta_usuario}")
+        
+        r1 = request.args.get("r1", "")
+        r2 = request.args.get("r2", "")
+        r3 = request.args.get("r3", "")
+        r4 = resposta_usuario or ""
+        pergunta_p5 = CHECKLIST_POLICIA[4]["pergunta"]
+        response.say(pergunta_p5, language="pt-BR", voice="alice")
+        
+        response.gather(
+            input="speech",
+            language="pt-BR",
+            action=f"/processar_checklist_policia?passo=5&r1={r1}&r2={r2}&r3={r3}&r4={r4}"
+        )
+        
+        response.say("Não obtivemos resposta. Encerrando.", language="pt-BR", voice="alice")
+        response.hangup()
+        
+    elif passo_atual == 5:
+        print(f"--- [{id_chamada}] Checklist Polícia ---")
+        print(f"Resposta P5 (Vítimas): {resposta_usuario}")
+        
+        r1 = request.args.get("r1", "")
+        r2 = request.args.get("r2", "")
+        r3 = request.args.get("r3", "")
+        r4 = request.args.get("r4", "")
+        r5 = resposta_usuario or ""
+        pergunta_p6 = CHECKLIST_POLICIA[5]["pergunta"]
+        response.say(pergunta_p6, language="pt-BR", voice="alice")
+        
+        response.gather(
+            input="speech",
+            language="pt-BR",
+            action=f"/processar_checklist_policia?passo=6&r1={r1}&r2={r2}&r3={r3}&r4={r4}&r5={r5}"
+        )
+        
+        response.say("Não obtivemos resposta. Encerrando.", language="pt-BR", voice="alice")
+        response.hangup()
+        
+    elif passo_atual == 6:
+        print(f"--- [{id_chamada}] Checklist Polícia - FINAL ---")
+        print(f"Resposta P6 (Local Seguro): {resposta_usuario}")
+        
+        r1 = request.args.get("r1", "")
+        r2 = request.args.get("r2", "")
+        r3 = request.args.get("r3", "")
+        r4 = request.args.get("r4", "")
+        r5 = request.args.get("r5", "")
+        r6 = resposta_usuario or ""
+        
+        # Monta o texto completo com todas as respostas para o classificador
+        texto_completo = f"""
+P1 - Autor presente: {r1}
+P2 - Armas envolvidas: {r2}
+P3 - Descrição do autor: {r3}
+P4 - Timing do crime: {r4}
+P5 - Vítimas feridas: {r5}
+P6 - Local seguro: {r6}
+"""
+        
+        print(f"\n=== ENVIANDO PARA CLASSIFICADOR POLÍCIA ===")
+        print(texto_completo)
+        
+        # Chama o classificador da Polícia
+        resultado = classify_police_urgency(texto_completo)
+        
+        nivel_urgencia = resultado.get("urgency_level", "MÉDIA")
+        razao = resultado.get("reasoning", "Não informado")
+        
+        print(f"✓ Nível de Urgência: {nivel_urgencia}")
+        print(f"✓ Razão: {razao}")
+        
+        # Responde ao usuário com o nível de urgência
+        mensagem_final = f"Checklist concluído. Sua ocorrência foi classificada como {nivel_urgencia}. Aguarde a chegada da Polícia."
         response.say(mensagem_final, language="pt-BR", voice="alice")
         response.hangup()
         
