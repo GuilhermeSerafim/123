@@ -2,7 +2,15 @@ from fastapi import FastAPI, Request
 from fastapi.responses import Response
 from twilio.twiml.voice_response import VoiceResponse
 import uvicorn
-from classifier import classify_emergency_call
+from classifiers import (
+    classify_emergency_call,
+    classify_police_urgency, 
+    generate_police_instructions,
+    classify_firefighter_urgency,
+    generate_firefighter_instructions,
+    classify_samu_urgency,
+    generate_samu_instructions
+)
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -58,6 +66,45 @@ async def handle_recording(request: Request):
     print(f"   Categoria: {classification['category']}")
     print(f"   Confiança: {classification['confidence']}%")
     print(f"   Motivo: {classification['reasoning']}")
+    
+    # Se for uma emergência policial, classifica a urgência POLICIAL
+    if classification['category'] in ['policia']:
+        urgency_data = classify_police_urgency(transcript)
+        print("🚨 Análise de Urgência POLICIAL:")
+        print(f"   Nível: {urgency_data['urgency_level']}")
+        print(f"   Confiança: {urgency_data['confidence']}%")
+        print(f"   Motivo: {urgency_data['reasoning']}")
+        
+        # Gera instruções específicas para a polícia
+        police_instructions = generate_police_instructions(urgency_data)
+        print("📋 Instruções para Despacho POLICIAL:")
+        print(police_instructions)
+    
+    # Se for uma emergência de bombeiros, classifica a urgência de BOMBEIROS
+    elif classification['category'] in ['bombeiros']:
+        urgency_data = classify_firefighter_urgency(transcript)
+        print("🚒 Análise de Urgência de BOMBEIROS:")
+        print(f"   Nível: {urgency_data['urgency_level']}")
+        print(f"   Confiança: {urgency_data['confidence']}%")
+        print(f"   Motivo: {urgency_data['reasoning']}")
+        
+        # Gera instruções específicas para os bombeiros
+        firefighter_instructions = generate_firefighter_instructions(urgency_data)
+        print("📋 Instruções para Despacho de BOMBEIROS:")
+        print(firefighter_instructions)
+    
+    # Se for uma emergência médica, classifica a urgência do SAMU
+    elif classification['category'] in ['samu']:
+        urgency_data = classify_samu_urgency(transcript)
+        print("🚑 Análise de Urgência do SAMU:")
+        print(f"   Nível: {urgency_data['urgency_level']}")
+        print(f"   Confiança: {urgency_data['confidence']}%")
+        print(f"   Motivo: {urgency_data['reasoning']}")
+        
+        # Gera instruções específicas para o SAMU
+        samu_instructions = generate_samu_instructions(urgency_data)
+        print("📋 Instruções para Despacho do SAMU:")
+        print(samu_instructions)
 
     response = VoiceResponse()
     response.say("Obrigado. Sua emergência foi registrada e será atendida em breve.")
@@ -71,6 +118,48 @@ async def classify(request: ClassifyRequest):
     """
     classification = classify_emergency_call(request.text)
     return classification
+
+@app.post("/classify-police-urgency")
+async def classify_police_urgency_endpoint(request: ClassifyRequest):
+    """
+    Endpoint para testar classificação de urgência POLICIAL de textos mockados.
+    Recebe um texto e retorna a análise de urgência policial com instruções.
+    """
+    urgency_data = classify_police_urgency(request.text)
+    police_instructions = generate_police_instructions(urgency_data)
+    
+    return {
+        "police_urgency_analysis": urgency_data,
+        "police_instructions": police_instructions
+    }
+
+@app.post("/classify-firefighter-urgency")
+async def classify_firefighter_urgency_endpoint(request: ClassifyRequest):
+    """
+    Endpoint para testar classificação de urgência de BOMBEIROS de textos mockados.
+    Recebe um texto e retorna a análise de urgência de bombeiros com instruções.
+    """
+    urgency_data = classify_firefighter_urgency(request.text)
+    firefighter_instructions = generate_firefighter_instructions(urgency_data)
+    
+    return {
+        "firefighter_urgency_analysis": urgency_data,
+        "firefighter_instructions": firefighter_instructions
+    }
+
+@app.post("/classify-samu-urgency")
+async def classify_samu_urgency_endpoint(request: ClassifyRequest):
+    """
+    Endpoint para testar classificação de urgência do SAMU de textos mockados.
+    Recebe um texto e retorna a análise de urgência médica com instruções.
+    """
+    urgency_data = classify_samu_urgency(request.text)
+    samu_instructions = generate_samu_instructions(urgency_data)
+    
+    return {
+        "samu_urgency_analysis": urgency_data,
+        "samu_instructions": samu_instructions
+    }
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=5000)
