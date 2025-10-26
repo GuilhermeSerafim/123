@@ -49,19 +49,29 @@ cp env.example .env
 
 4. **Teste o sistema:**
 ```bash
-python test_classifier.py
+python tests/run_all_tests.py
 ```
 
 ## 📖 Como Usar
 
 ### 1. 🧪 Teste com dados mockados
 
-Execute o script de teste para ver exemplos de classificação:
+Execute todos os testes do sistema:
 ```bash
-python test_classifier.py
+python tests/run_all_tests.py
 ```
 
-Este script testa 10 exemplos pré-definidos e mostra a classificação de cada um.
+Ou execute testes específicos:
+```bash
+# Teste de classificação geral
+python tests/test_classifier.py
+
+# Teste de urgência policial
+python tests/test_urgency_classifier.py
+
+# Teste de polícia analogia
+python tests/test_policia_analogia.py
+```
 
 ### 2. 🌐 Teste via API
 
@@ -98,18 +108,27 @@ O sistema está integrado com Twilio para chamadas reais:
 - `POST /voice` - Recebe chamadas
 - `POST /handle_recording` - Processa gravações
 - `POST /classify` - Classifica textos
+- `POST /classify-police-urgency` - Classifica urgência POLICIAL
 
 ## 📁 Estrutura do Projeto
 
 ```
 unificador-de-emergencia/
-├── app.py              # 🚀 API FastAPI com endpoints
-├── classifier.py       # 🧠 Lógica de classificação com OpenAI
-├── test_classifier.py  # 🧪 Script de teste com dados mockados
-├── requirements.txt    # 📦 Dependências do projeto
-├── env.example        # 🔧 Exemplo de variáveis de ambiente
-├── .gitignore         # 🚫 Arquivos ignorados pelo Git
-└── README.md          # 📖 Este arquivo
+├── app.py                    # 🚀 API FastAPI com endpoints
+├── classifier.py             # 🧠 Lógica de classificação com OpenAI
+├── urgency_classifier.py     # 🚨 Classificador de urgência POLICIAL
+├── answer_phone.py          # 📞 Versão Flask (legado)
+├── requirements.txt         # 📦 Dependências do projeto
+├── tests/                   # 🧪 Pasta de testes organizados
+│   ├── __init__.py
+│   ├── run_all_tests.py     # 🚀 Executa todos os testes
+│   ├── test_classifier.py   # 🧪 Teste de classificação geral
+│   ├── test_urgency_classifier.py  # 🚨 Teste de urgência policial
+│   ├── test_policia_analogia.py   # 🍕 Teste de chamadas disfarçadas
+│   └── README.md            # 📖 Documentação dos testes
+├── README.md                # 📖 Documentação principal
+├── README_URGENCY.md        # 🚨 Documentação do sistema de urgência
+└── venv/                   # 🐍 Ambiente virtual Python
 ```
 
 ## 🔧 Tecnologias Utilizadas
