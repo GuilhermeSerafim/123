@@ -8,8 +8,8 @@ from typing import Dict
 import json
 from twilio.rest import Client # Certifique-se que 'Client' está importado de 'twilio.rest'
 from classifiers.classifier import classify_emergency_call
-from classifiers.firefighter_urgency_classifier import generate_firefighter_instructions
-from classifiers.police_urgency_classifier import generate_police_instructions
+from classifiers.firefighter_urgency_classifier import generate_firefighter_instructions, classify_firefighter_urgency
+from classifiers.police_urgency_classifier import generate_police_instructions, classify_police_urgency
 from classifiers.samu_urgency_classifier import classify_samu_urgency
 from classifiers.gerar_relatorio_conciso_ia import gerar_relatorio_conciso_ia
 
@@ -228,6 +228,7 @@ def processar_checklist_samu():
         # Pergunta P3
         pergunta_p3 = CHECKLIST_SAMU[2]["pergunta"] # P3_sintoma_principal
         response.say(pergunta_p3, language="pt-BR", voice="alice")
+        
         response.gather(
             input="speech", language="pt-BR",
             speech_timeout="1",
@@ -243,6 +244,7 @@ def processar_checklist_samu():
         # Pergunta P4
         pergunta_p4 = CHECKLIST_SAMU[3]["pergunta"] # P4_sangramento_fratura
         response.say(pergunta_p4, language="pt-BR", voice="alice")
+        
         response.gather(
             input="speech", language="pt-BR",
             speech_timeout="1",
@@ -258,6 +260,7 @@ def processar_checklist_samu():
         # Pergunta P5
         pergunta_p5 = CHECKLIST_SAMU[4]["pergunta"] # P5_trauma_alto_risco
         response.say(pergunta_p5, language="pt-BR", voice="alice")
+        
         response.gather(
             input="speech", language="pt-BR",
             speech_timeout="1",
@@ -293,6 +296,13 @@ def processar_checklist_samu():
         print("---- RELATÓRIO FINAL GERADO PELA IA ----")
         print(relatorio_texto)
         print("---------------------------------------")
+
+        # --- AVISO FINAL PARA O USUÁRIO ORIGINAL ---
+        # Substitua o response.say() vazio por isto:
+        response.say("Checklist concluído. As equipes estão sendo acionadas. Encerrando chamada.", language="pt-BR", voice="alice")
+        response.hangup() # Adiciona o comando para desligar a chamada do usuário
+        # -------------------------------------------
+        
         # --- FIM DO BABY STEP ---
         # --- BABY STEP: ADICIONAR O DELAY ---
         print(f"[{id_chamada}] Esperando 5 segundos antes de iniciar a simulação...")
