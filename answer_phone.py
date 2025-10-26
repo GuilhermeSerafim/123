@@ -146,7 +146,7 @@ def receber_classificar_e_agir():
         response.hangup()
     
     elif categoria == "bombeiros":
-        pergunta_p1 = CHECKLIST_POLICIA[0]["pergunta"]
+        pergunta_p1 = CHECKLIST_BOMBEIROS[0]["pergunta"]
         response.say(f"Entendido. Vamos iniciar o checklist BOMBEIRO. {pergunta_p1}", language="pt-BR", voice="alice")
         
         response.gather(
