@@ -10,20 +10,31 @@ from classifiers.classifier import classify_emergency_call
 from classifiers.firefighter_urgency_classifier import generate_firefighter_instructions
 from classifiers.police_urgency_classifier import generate_police_instructions
 from classifiers.samu_urgency_classifier import classify_samu_urgency
+from classifiers.gerar_relatorio_conciso_ia import gerar_relatorio_conciso_ia
 
 load_dotenv()
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 CHECKLIST_SAMU = [
-    {"id": "P1_sintoma_principal", "pergunta": "Qual é o principal sintoma agora? Por exemplo, inconsciente, dor no peito, ou sangramento."},
-    {"id": "P2_consciencia_respiracao", "pergunta": "A pessoa está consciente e respirando?"},
-    {"id": "P3_idade_condicoes", "pergunta": "Qual a idade aproximada e a pessoa é criança, idosa, ou gestante?"},
-    {"id": "P4_sangramento_fratura", "pergunta": "Há sangramento importante ou fratura aparente?"},
-    {"id": "P5_trauma_alto_risco", "pergunta": "Houve um acidente de trânsito em alta velocidade ou queda de altura?"},
-    {"id": "P6_acesso_referencia", "pergunta": "Qual o endereço completo com ponto de referência e informações de acesso, como portaria ou bloco?"}
-]
+    # 1. Avaliação Primária (Risco imediato à vida?)
+    {"id": "P1_consciencia_respiracao", "pergunta": "A pessoa está consciente e respirando?"}, # Era P2
 
+    # 2. Localização (Para onde enviar ajuda?)
+    {"id": "P2_acesso_referencia", "pergunta": "Qual o endereço completo com ponto de referência e informações de acesso, como portaria ou bloco?"}, # Era P6
+
+    # 3. Qual o problema principal?
+    {"id": "P3_sintoma_principal", "pergunta": "Qual é o principal sintoma agora? Por exemplo, inconsciente, dor no peito, ou sangramento."}, # Era P1
+
+    # 4. Há fatores agravantes óbvios?
+    {"id": "P4_sangramento_fratura", "pergunta": "Há sangramento importante ou fratura aparente?"}, # Permanece P4
+
+    # 5. Houve um mecanismo de trauma grave?
+    {"id": "P5_trauma_alto_risco", "pergunta": "Houve um acidente de trânsito em alta velocidade ou queda de altura?"}, # Permanece P5
+
+    # 6. Contexto do Paciente (modifica prioridade/cuidados)
+    {"id": "P6_idade_condicoes", "pergunta": "Qual a idade aproximada e a pessoa é criança, idosa, ou gestante?"} # Era P3
+]
 CHECKLIST_POLICIA = [
     # 1. A pessoa pode falar?
     {"id": "P1_local_seguro", "pergunta": "O local onde você está é seguro para falar?"},
@@ -150,10 +161,33 @@ def receber_classificar_e_agir():
 
     return Response(str(response), content_type='application/xml')
 
+# (Certifique-se de que o CHECKLIST_SAMU definido no topo do seu app.py
+#  seja a versão REORGANIZADA com 6 perguntas que fizemos antes)
+CHECKLIST_SAMU = [
+    # 1. Avaliação Primária (Risco imediato à vida?)
+    {"id": "P1_consciencia_respiracao", "pergunta": "A pessoa está consciente e respirando?"}, # Era P2
+
+    # 2. Localização (Para onde enviar ajuda?)
+    {"id": "P2_acesso_referencia", "pergunta": "Qual o endereço completo com ponto de referência e informações de acesso, como portaria ou bloco?"}, # Era P6
+
+    # 3. Qual o problema principal?
+    {"id": "P3_sintoma_principal", "pergunta": "Qual é o principal sintoma agora? Por exemplo, inconsciente, dor no peito, ou sangramento."}, # Era P1
+
+    # 4. Há fatores agravantes óbvios?
+    {"id": "P4_sangramento_fratura", "pergunta": "Há sangramento importante ou fratura aparente?"}, # Permanece P4
+
+    # 5. Houve um mecanismo de trauma grave?
+    {"id": "P5_trauma_alto_risco", "pergunta": "Houve um acidente de trânsito em alta velocidade ou queda de altura?"}, # Permanece P5
+
+    # 6. Contexto do Paciente (modifica prioridade/cuidados)
+    {"id": "P6_idade_condicoes", "pergunta": "Qual a idade aproximada e a pessoa é criança, idosa, ou gestante?"} # Era P3
+]
+
+# --- Rota "Motor" do Checklist (Prints Estruturados com if/elif) ---
 @app.route("/processar_checklist_samu", methods=['POST'])
 def processar_checklist_samu():
     """
-    PASSO 3 (e 4, 5...): O "Motor" do Checklist.
+    PASSO 3, 4, 5...: O "Motor" do Checklist.
     """
     passo_atual = int(request.args.get("passo", 0))
     resposta_usuario = request.form.get('SpeechResult')
@@ -161,76 +195,114 @@ def processar_checklist_samu():
 
     response = VoiceResponse()
 
-    if passo_atual == 1:
-        print(f"Resposta P1 (Sintoma): {resposta_usuario}")
-        respostas.append(f"P1_sintoma: {resposta_usuario}")
+    # --- CADEIA DE PERGUNTAS COM PRINTS CORRIGIDOS ---
 
-        pergunta_p2 = CHECKLIST_SAMU[1]["pergunta"]
+    if passo_atual == 1:
+        # Respondeu P1 (índice 0). Vamos perguntar P2 (índice 1).
+        id_pergunta_anterior = CHECKLIST_SAMU[0]["id"] # P1_consciencia_respiracao
+        print(f"Resposta {id_pergunta_anterior}: {resposta_usuario}")
+        respostas.append(f"{id_pergunta_anterior}: {resposta_usuario}")
+
+        # Pergunta P2
+        pergunta_p2 = CHECKLIST_SAMU[1]["pergunta"] # P2_acesso_referencia
         response.say(pergunta_p2, language="pt-BR", voice="alice")
         response.gather(
-            input="speech",
-            language="pt-BR",
+            input="speech", language="pt-BR",
+            speech_timeout="1",
             action=f"/processar_checklist_samu?passo=2"
         )
+
     elif passo_atual == 2:
-        print(f"Resposta P2 (Consciência): {resposta_usuario}")
-        respostas.append(f"P2_consciencia: {resposta_usuario}")
-        pergunta_p3 = CHECKLIST_SAMU[2]["pergunta"]
+        # Respondeu P2 (índice 1). Vamos perguntar P3 (índice 2).
+        id_pergunta_anterior = CHECKLIST_SAMU[1]["id"] # P2_acesso_referencia
+        print(f"Resposta {id_pergunta_anterior}: {resposta_usuario}")
+        respostas.append(f"{id_pergunta_anterior}: {resposta_usuario}")
+
+        # Pergunta P3
+        pergunta_p3 = CHECKLIST_SAMU[2]["pergunta"] # P3_sintoma_principal
         response.say(pergunta_p3, language="pt-BR", voice="alice")
         response.gather(
-            input="speech",
-            language="pt-BR",
+            input="speech", language="pt-BR",
+            speech_timeout="1",
             action=f"/processar_checklist_samu?passo=3"
         )
+
     elif passo_atual == 3:
-        print(f"Resposta P3 (Idade/Condições): {resposta_usuario}")
-        respostas.append(f"P3_idade: {resposta_usuario}")
-        pergunta_p4 = CHECKLIST_SAMU[3]["pergunta"]
+        # Respondeu P3 (índice 2). Vamos perguntar P4 (índice 3).
+        id_pergunta_anterior = CHECKLIST_SAMU[2]["id"] # P3_sintoma_principal
+        print(f"Resposta {id_pergunta_anterior}: {resposta_usuario}")
+        respostas.append(f"{id_pergunta_anterior}: {resposta_usuario}")
+
+        # Pergunta P4
+        pergunta_p4 = CHECKLIST_SAMU[3]["pergunta"] # P4_sangramento_fratura
         response.say(pergunta_p4, language="pt-BR", voice="alice")
         response.gather(
-            input="speech",
-            language="pt-BR",
+            input="speech", language="pt-BR",
+            speech_timeout="1",
             action=f"/processar_checklist_samu?passo=4"
         )
+
     elif passo_atual == 4:
-        print(f"Resposta P4 (Sangramento/Fratura): {resposta_usuario}")
-        respostas.append(f"P4_sangramento: {resposta_usuario}")
-        pergunta_p5 = CHECKLIST_SAMU[4]["pergunta"]
+        # Respondeu P4 (índice 3). Vamos perguntar P5 (índice 4).
+        id_pergunta_anterior = CHECKLIST_SAMU[3]["id"] # P4_sangramento_fratura
+        print(f"Resposta {id_pergunta_anterior}: {resposta_usuario}")
+        respostas.append(f"{id_pergunta_anterior}: {resposta_usuario}")
+
+        # Pergunta P5
+        pergunta_p5 = CHECKLIST_SAMU[4]["pergunta"] # P5_trauma_alto_risco
         response.say(pergunta_p5, language="pt-BR", voice="alice")
         response.gather(
-            input="speech",
-            language="pt-BR",
+            input="speech", language="pt-BR",
+            speech_timeout="1",
             action=f"/processar_checklist_samu?passo=5"
         )
+
     elif passo_atual == 5:
-        print(f"Resposta P5 (Trauma): {resposta_usuario}")
-        respostas.append(f"P5_trauma: {resposta_usuario}")
-        pergunta_p6 = CHECKLIST_SAMU[5]["pergunta"]
+        # Respondeu P5 (índice 4). Vamos perguntar P6 (índice 5).
+        id_pergunta_anterior = CHECKLIST_SAMU[4]["id"] # P5_trauma_alto_risco
+        print(f"Resposta {id_pergunta_anterior}: {resposta_usuario}")
+        respostas.append(f"{id_pergunta_anterior}: {resposta_usuario}")
+
+        # Pergunta P6
+        pergunta_p6 = CHECKLIST_SAMU[5]["pergunta"] # P6_idade_condicoes
         response.say(pergunta_p6, language="pt-BR", voice="alice")
         response.gather(
-            input="speech",
-            language="pt-BR",
+            input="speech", language="pt-BR",
+            speech_timeout="1",
             action=f"/processar_checklist_samu?passo=6"
         )
-    elif passo_atual == 6:
-        print(f"Resposta P6 (Acesso): {resposta_usuario}")
-        respostas.append(f"P6_acesso: {resposta_usuario}")
-        
-        print(f"--- [{id_chamada}] Checklist Concluído ---")
 
-        print("DADOS FINAIS COLETADOS (do array global):")
-        print(respostas)
+    elif passo_atual == 6:
+# Respondeu P6. O CHECKLIST ACABOU.
+        # (A resposta P6 já foi salva no início da função)
+        print(f"--- [{id_chamada}] Checklist SAMU Concluído ---")
+
+        # --- BABY STEP: GERAR E MOSTRAR O RELATÓRIO ---
+        print("Gerando relatório final para SAMU...")
         
+        # Chama a função de IA, passando o array 'respostas' e o cliente OpenAI
+        relatorio_texto = gerar_relatorio_conciso_ia(respostas, "samu") 
+        
+        print("---- RELATÓRIO FINAL GERADO PELA IA ----")
+        print(relatorio_texto)
+        print("---------------------------------------")
+        # --- FIM DO BABY STEP ---
+
+        # (Aqui entraria a lógica de simular a chamada usando 'relatorio_texto')
+
         response.say("Checklist concluído. As equipes estão sendo acionadas. Encerrando chamada.", language="pt-BR", voice="alice")
         response.hangup()
+
     else:
+        # Segurança: se algo der errado (ex: passo=0 ou passo=7)
         response.say("Ocorreu um erro no checklist. Encerrando.", language="pt-BR", voice="alice")
         response.hangup()
 
+    # Fallback (se o usuário não responder)
     if "gather" in str(response):
-         response.say("Não obtivemos resposta. Encerrando.", language="pt-BR", voice="alice")
-         response.hangup()
-         
+        response.say("Não obtivemos resposta. Encerrando.", language="pt-BR", voice="alice")
+        response.hangup()
+
     return Response(str(response), content_type='application/xml')
 
 @app.route("/processar_checklist_policia", methods=['POST'])
