@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request
+from fastapi.responses import Response
 from twilio.twiml.voice_response import VoiceResponse
 import uvicorn
 from classifier import classify_emergency_call
@@ -9,6 +10,29 @@ app = FastAPI()
 # Modelo para o endpoint de classificação
 class ClassifyRequest(BaseModel):
     text: str
+
+@app.get("/")
+@app.post("/")
+async def atender_e_falar():
+    """
+    Como estamos no DEMO, ele vai passar uma mensagem default, mas é só apertar qualquer tecla que já inicia a nossa aplicação!
+    Atende a chamada e apenas diz a mensagem.
+    A chamada será desligada automaticamente depois.
+    """
+    
+    # 1. Cria a resposta
+    response = VoiceResponse()
+
+    # 2. Diga a mensagem
+    response.say(
+        "Serviço de emergência, o que você precisa?", 
+        language="pt-BR", 
+        voice="alice"
+    )
+
+    # 3. Retorna o TwiML
+    # (Como não há mais comandos, o Twilio desliga a chamada após falar)
+    return Response(content=str(response), media_type='application/xml')
 
 @app.post("/voice")
 async def voice(request: Request):
