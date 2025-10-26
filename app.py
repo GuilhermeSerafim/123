@@ -7,7 +7,9 @@ from classifiers import (
     classify_police_urgency, 
     generate_police_instructions,
     classify_firefighter_urgency,
-    generate_firefighter_instructions
+    generate_firefighter_instructions,
+    classify_samu_urgency,
+    generate_samu_instructions
 )
 from pydantic import BaseModel
 
@@ -90,6 +92,19 @@ async def handle_recording(request: Request):
         firefighter_instructions = generate_firefighter_instructions(urgency_data)
         print("📋 Instruções para Despacho de BOMBEIROS:")
         print(firefighter_instructions)
+    
+    # Se for uma emergência médica, classifica a urgência do SAMU
+    elif classification['category'] in ['samu']:
+        urgency_data = classify_samu_urgency(transcript)
+        print("🚑 Análise de Urgência do SAMU:")
+        print(f"   Nível: {urgency_data['urgency_level']}")
+        print(f"   Confiança: {urgency_data['confidence']}%")
+        print(f"   Motivo: {urgency_data['reasoning']}")
+        
+        # Gera instruções específicas para o SAMU
+        samu_instructions = generate_samu_instructions(urgency_data)
+        print("📋 Instruções para Despacho do SAMU:")
+        print(samu_instructions)
 
     response = VoiceResponse()
     response.say("Obrigado. Sua emergência foi registrada e será atendida em breve.")
@@ -130,6 +145,20 @@ async def classify_firefighter_urgency_endpoint(request: ClassifyRequest):
     return {
         "firefighter_urgency_analysis": urgency_data,
         "firefighter_instructions": firefighter_instructions
+    }
+
+@app.post("/classify-samu-urgency")
+async def classify_samu_urgency_endpoint(request: ClassifyRequest):
+    """
+    Endpoint para testar classificação de urgência do SAMU de textos mockados.
+    Recebe um texto e retorna a análise de urgência médica com instruções.
+    """
+    urgency_data = classify_samu_urgency(request.text)
+    samu_instructions = generate_samu_instructions(urgency_data)
+    
+    return {
+        "samu_urgency_analysis": urgency_data,
+        "samu_instructions": samu_instructions
     }
 
 if __name__ == "__main__":

@@ -10,6 +10,7 @@ tests/
 ├── run_all_tests.py                     # Executa todos os testes
 ├── test_police_urgency_classifier.py    # Testes do classificador de urgência POLICIAL
 ├── test_firefighter_urgency_classifier.py  # Testes do classificador de urgência de BOMBEIROS
+├── test_samu_urgency_classifier.py         # Testes do classificador de urgência do SAMU
 ├── test_classifier.py                   # Testes do classificador geral
 ├── test_policia_analogia.py             # Testes de chamadas disfarçadas
 └── README.md                            # Esta documentação
@@ -34,6 +35,9 @@ python tests/test_classifier.py
 # Teste de urgência de bombeiros
 python tests/test_firefighter_urgency_classifier.py
 
+# Teste de urgência do SAMU
+python tests/test_samu_urgency_classifier.py
+
 # Teste de polícia analogia
 python tests/test_policia_analogia.py
 ```
@@ -57,7 +61,13 @@ python tests/test_policia_analogia.py
 - Verifica extração de informações (P1-P6) específicas para bombeiros
 - Gera instruções para despacho de bombeiros
 
-### 4. **Teste de Polícia Analogia** (`test_policia_analogia.py`)
+### 4. **Teste de Urgência do SAMU** (`test_samu_urgency_classifier.py`)
+- Testa 8 cenários diferentes de urgência médica
+- Valida níveis: CRÍTICA, ALTA, MÉDIA, BAIXA
+- Verifica extração de informações (P1-P6) específicas para SAMU
+- Gera instruções para despacho do SAMU
+
+### 5. **Teste de Polícia Analogia** (`test_policia_analogia.py`)
 - Testa detecção de chamadas disfarçadas
 - Valida padrões como "pizza de espinafre com ketchup"
 - Verifica classificação como "policia-analogia"

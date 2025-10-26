@@ -55,6 +55,16 @@ def run_all_tests():
     except Exception as e:
         print(f"❌ Teste de urgência de bombeiros: FALHOU - {e}")
     
+    # Teste 5: Classificador de urgência do SAMU
+    print("\n🚑 TESTE 5: Classificador de Urgência do SAMU")
+    print("-" * 50)
+    try:
+        from test_samu_urgency_classifier import test_samu_urgency_classification
+        test_samu_urgency_classification()
+        print("✅ Teste de urgência do SAMU: PASSOU")
+    except Exception as e:
+        print(f"❌ Teste de urgência do SAMU: FALHOU - {e}")
+    
     print("\n" + "=" * 60)
     print("🏁 TODOS OS TESTES CONCLUÍDOS")
 

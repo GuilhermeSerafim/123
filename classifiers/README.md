@@ -10,6 +10,7 @@ classifiers/
 ├── classifier.py                         # 🧠 Classificador geral de emergências
 ├── police_urgency_classifier.py          # 🚨 Classificador de urgência POLICIAL
 ├── firefighter_urgency_classifier.py     # 🚒 Classificador de urgência de BOMBEIROS
+├── samu_urgency_classifier.py            # 🚑 Classificador de urgência do SAMU
 └── README.md                            # Esta documentação
 ```
 
@@ -33,6 +34,12 @@ classifiers/
 - **Critérios**: P1-P6 (tipo de emergência, pessoas presas, materiais perigosos, etc.)
 - **Uso**: Ativado automaticamente quando categoria = "bombeiros"
 
+### 4. **Classificador de Urgência do SAMU** (`samu_urgency_classifier.py`)
+- **Função**: `classify_samu_urgency(transcript)`
+- **Níveis**: CRÍTICA, ALTA, MÉDIA, BAIXA
+- **Critérios**: P1-P6 (sintoma principal, consciência/respiração, idade/condições, etc.)
+- **Uso**: Ativado automaticamente quando categoria = "samu"
+
 ## 🔧 Como Usar
 
 ### Importação Simples
@@ -42,7 +49,9 @@ from classifiers import (
     classify_police_urgency,
     generate_police_instructions,
     classify_firefighter_urgency,
-    generate_firefighter_instructions
+    generate_firefighter_instructions,
+    classify_samu_urgency,
+    generate_samu_instructions
 )
 ```
 
@@ -69,7 +78,7 @@ Classificador Geral (classifier.py)
    Categoria?
    ├── policia → Classificador de Urgência POLICIAL
    ├── bombeiros → Classificador de Urgência de BOMBEIROS
-   ├── samu → (sem classificador específico ainda)
+   ├── samu → Classificador de Urgência do SAMU
    └── outros → (sem classificador específico ainda)
        ↓
    Instruções Específicas
@@ -84,6 +93,10 @@ Classificador Geral (classifier.py)
 ### Bombeiros
 - **Objetivo**: Eliminar risco de fogo, explosão, colapso ou aprisionamento
 - **Critérios**: Tipo de emergência, pessoas presas, materiais perigosos, etc.
+
+### SAMU
+- **Objetivo**: Estabilizar até a chegada da equipe
+- **Critérios**: Sintoma principal, consciência/respiração, idade/condições, etc.
 
 ## 🔄 Extensibilidade
 

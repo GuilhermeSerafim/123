@@ -69,6 +69,12 @@ python tests/test_classifier.py
 # Teste de urgência policial
 python tests/test_police_urgency_classifier.py
 
+# Teste de urgência de bombeiros
+python tests/test_firefighter_urgency_classifier.py
+
+# Teste de urgência do SAMU
+python tests/test_samu_urgency_classifier.py
+
 # Teste de polícia analogia
 python tests/test_policia_analogia.py
 ```
@@ -110,6 +116,7 @@ O sistema está integrado com Twilio para chamadas reais:
 - `POST /classify` - Classifica textos
 - `POST /classify-police-urgency` - Classifica urgência POLICIAL
 - `POST /classify-firefighter-urgency` - Classifica urgência de BOMBEIROS
+- `POST /classify-samu-urgency` - Classifica urgência do SAMU
 
 ## 📁 Estrutura do Projeto
 
@@ -123,6 +130,7 @@ unificador-de-emergencia/
 │   ├── classifier.py        # 🧠 Classificador geral de emergências
 │   ├── police_urgency_classifier.py # 🚨 Classificador de urgência POLICIAL
 │   ├── firefighter_urgency_classifier.py  # 🚒 Classificador de urgência de BOMBEIROS
+│   ├── samu_urgency_classifier.py         # 🚑 Classificador de urgência do SAMU
 │   └── README.md            # 📖 Documentação dos classificadores
 ├── tests/                   # 🧪 Pasta de testes organizados
 │   ├── __init__.py
@@ -130,6 +138,7 @@ unificador-de-emergencia/
 │   ├── test_classifier.py   # 🧪 Teste de classificação geral
 │   ├── test_police_urgency_classifier.py  # 🚨 Teste de urgência policial
 │   ├── test_firefighter_urgency_classifier.py  # 🚒 Teste de urgência de bombeiros
+│   ├── test_samu_urgency_classifier.py         # 🚑 Teste de urgência do SAMU
 │   ├── test_policia_analogia.py   # 🍕 Teste de chamadas disfarçadas
 │   └── README.md            # 📖 Documentação dos testes
 ├── README.md                # 📖 Documentação principal
