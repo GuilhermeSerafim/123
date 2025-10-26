@@ -133,89 +133,159 @@ def receber_classificar_e_agir():
 @app.route("/processar_checklist_samu", methods=['POST'])
 def processar_checklist_samu():
     """
-    PASSO 3 (e 4, 5...): O "Motor" do Checklist.
+    PASSO 3 (e 4, 5, 6): O "Motor" do Checklist.
     """
     passo_atual = int(request.args.get("passo", 0))
-    resposta_usuario = request.form.get('SpeenchResult')
+    resposta_usuario = request.form.get('SpeechResult')  # Corrigido o typo
     id_chamada = request.form.get('CallSid')
 
     response = VoiceResponse()
 
     # BABY STEP
     if passo_atual == 1:
-        print(f"--- [{id_chamada} Checklist SAMU ---]")
+        print(f"--- [{id_chamada}] Checklist SAMU ---")
         print(f"Resposta P1 (Sintoma): {resposta_usuario}")
 
-        # Agora, vamos fazer a P2
+        # Armazena a resposta P1 e vai para P2
+        r1 = resposta_usuario or ""
         pergunta_p2 = CHECKLIST_SAMU[1]["pergunta"]
         response.say(pergunta_p2, language="pt-BR", voice="alice")
 
         response.gather(
             input="speech",
             language="pt-BR",
-            action=f"/processar_checklist_samu?passo=2"
+            action=f"/processar_checklist_samu?passo=2&r1={r1}"
         )
 
         response.say("Não obtivemos resposta. Encerrando.", language="pt-BR", voice="alice")
         response.hangup()
 
     elif passo_atual == 2:
-        print(f"--- [{id_chamada} Checklist SAMU ---]")
-        print(f"Resposta P1 (Sintoma): {resposta_usuario}")
+        print(f"--- [{id_chamada}] Checklist SAMU ---")
+        print(f"Resposta P2 (Consciência): {resposta_usuario}")
+        
+        # Recupera resposta anterior e armazena P2
+        r1 = request.args.get("r1", "")
+        r2 = resposta_usuario or ""
         pergunta_p3 = CHECKLIST_SAMU[2]["pergunta"]
         response.say(pergunta_p3, language="pt-BR", voice="alice")
+        
         response.gather(
             input="speech",
             language="pt-BR",
-            action=f"/processar_checklist_samu?passo=3"
+            action=f"/processar_checklist_samu?passo=3&r1={r1}&r2={r2}"
         )
+        
+        response.say("Não obtivemos resposta. Encerrando.", language="pt-BR", voice="alice")
+        response.hangup()
+        
     elif passo_atual == 3:
-        print(f"--- [{id_chamada} Checklist SAMU ---]")
-        print(f"Resposta P1 (Sintoma): {resposta_usuario}")
+        print(f"--- [{id_chamada}] Checklist SAMU ---")
+        print(f"Resposta P3 (Idade/Condições): {resposta_usuario}")
+        
+        # Recupera respostas anteriores e armazena P3
+        r1 = request.args.get("r1", "")
+        r2 = request.args.get("r2", "")
+        r3 = resposta_usuario or ""
         pergunta_p4 = CHECKLIST_SAMU[3]["pergunta"]
         response.say(pergunta_p4, language="pt-BR", voice="alice")
+        
         response.gather(
             input="speech",
             language="pt-BR",
-            action=f"/processar_checklist_samu?passo=4"
+            action=f"/processar_checklist_samu?passo=4&r1={r1}&r2={r2}&r3={r3}"
         )
+        
+        response.say("Não obtivemos resposta. Encerrando.", language="pt-BR", voice="alice")
+        response.hangup()
+        
     elif passo_atual == 4:
-        print(f"--- [{id_chamada} Checklist SAMU ---]")
-        print(f"Resposta P1 (Sintoma): {resposta_usuario}")
+        print(f"--- [{id_chamada}] Checklist SAMU ---")
+        print(f"Resposta P4 (Sangramento/Fratura): {resposta_usuario}")
+        
+        # Recupera respostas anteriores e armazena P4
+        r1 = request.args.get("r1", "")
+        r2 = request.args.get("r2", "")
+        r3 = request.args.get("r3", "")
+        r4 = resposta_usuario or ""
         pergunta_p5 = CHECKLIST_SAMU[4]["pergunta"]
         response.say(pergunta_p5, language="pt-BR", voice="alice")
+        
         response.gather(
             input="speech",
             language="pt-BR",
-            action=f"/processar_checklist_samu?passo=4"
+            action=f"/processar_checklist_samu?passo=5&r1={r1}&r2={r2}&r3={r3}&r4={r4}"
         )
+        
+        response.say("Não obtivemos resposta. Encerrando.", language="pt-BR", voice="alice")
+        response.hangup()
+        
     elif passo_atual == 5:
-        print(f"--- [{id_chamada} Checklist SAMU ---]")
-        print(f"Resposta P1 (Sintoma): {resposta_usuario}")
+        print(f"--- [{id_chamada}] Checklist SAMU ---")
+        print(f"Resposta P5 (Trauma): {resposta_usuario}")
+        
+        # Recupera respostas anteriores e armazena P5
+        r1 = request.args.get("r1", "")
+        r2 = request.args.get("r2", "")
+        r3 = request.args.get("r3", "")
+        r4 = request.args.get("r4", "")
+        r5 = resposta_usuario or ""
         pergunta_p6 = CHECKLIST_SAMU[5]["pergunta"]
         response.say(pergunta_p6, language="pt-BR", voice="alice")
+        
         response.gather(
             input="speech",
             language="pt-BR",
-            action=f"/processar_checklist_samu?passo=5"
+            action=f"/processar_checklist_samu?passo=6&r1={r1}&r2={r2}&r3={r3}&r4={r4}&r5={r5}"
         )
-    elif passo_atual == 6:
-        print(f"--- [{id_chamada} Checklist SAMU ---]")
-        print(f"Resposta P1 (Sintoma): {resposta_usuario}")
-        pergunta_p7 = CHECKLIST_SAMU[6]["pergunta"]
-        response.say(pergunta_p7, language="pt-BR", voice="alice")
-        response.gather(
-            input="speech",
-            language="pt-BR",
-            action=f"/processar_checklist_samu?passo=6"
-        )
-
-        response.say("Aguarde a emergência", language="pt-BR", voice="alice")
+        
+        response.say("Não obtivemos resposta. Encerrando.", language="pt-BR", voice="alice")
         response.hangup()
+        
+    elif passo_atual == 6:
+        print(f"--- [{id_chamada}] Checklist SAMU - FINAL ---")
+        print(f"Resposta P6 (Endereço): {resposta_usuario}")
+        
+        # Recupera TODAS as respostas anteriores e armazena P6
+        r1 = request.args.get("r1", "")
+        r2 = request.args.get("r2", "")
+        r3 = request.args.get("r3", "")
+        r4 = request.args.get("r4", "")
+        r5 = request.args.get("r5", "")
+        r6 = resposta_usuario or ""
+        
+        # Monta o texto completo com todas as respostas para o classificador
+        texto_completo = f"""
+P1 - Sintoma principal: {r1}
+P2 - Consciência e respiração: {r2}
+P3 - Idade e condições: {r3}
+P4 - Sangramento ou fratura: {r4}
+P5 - Trauma de alto risco: {r5}
+P6 - Endereço e acesso: {r6}
+"""
+        
+        print(f"\n=== ENVIANDO PARA CLASSIFICADOR SAMU ===")
+        print(texto_completo)
+        
+        # Chama o classificador do SAMU
+        resultado = classify_samu_urgency(texto_completo)
+        
+        nivel_urgencia = resultado.get("urgency_level", "MÉDIA")
+        razao = resultado.get("reasoning", "Não informado")
+        
+        print(f"✓ Nível de Urgência: {nivel_urgencia}")
+        print(f"✓ Razão: {razao}")
+        
+        # Responde ao usuário com o nível de urgência
+        mensagem_final = f"Checklist concluído. Sua emergência foi classificada como {nivel_urgencia}. Aguarde a chegada da ambulância."
+        response.say(mensagem_final, language="pt-BR", voice="alice")
+        response.hangup()
+        
     else:
         # Segurança: se algo der errado
         response.say("Ocorreu um erro no checklist. Encerrando.", language="pt-BR", voice="alice")
         response.hangup()
+        
     return Response(str(response), content_type='application/xml')
 
 
